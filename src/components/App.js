@@ -5,14 +5,14 @@ import axios from "axios";
 
 const App = () => {
   const [loading,setLoading]=useState(true);
-  const [data,setData]=useState(null);
+  const [display,setDisplay]=useState(null);
 
 
   useEffect(()=>{
     axios.get('https://dummyjson.com/products')
     .then(function(response){
       console.log(response)
-      setData(response);
+      setDisplay(response);
       setLoading(false); 
     }).catch((e)=>{console.log(e)
       setLoading(false);
@@ -26,7 +26,7 @@ const App = () => {
         {
           loading?<div>Loading...</div>:<div>
             <h1>Data fetched from API</h1>
-            <pre>{JSON.stringify(data.data)}</pre>
+            <pre>{JSON.stringify(display.data)}</pre>
           </div>
         }
     </div>
