@@ -4,33 +4,45 @@ import './../styles/App.css';
 import axios from "axios";
 
 const App = () => {
-  const [loading,setLoading]=useState(true);
-  const [display,setDisplay]=useState(null);
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-
-  useEffect(()=>{
-    axios.get('https://dummyjson.com/products')
-    .then(function(response){
-      console.log(response)
-      setDisplay(response);
-      setLoading(false); 
-    }).catch((e)=>{console.log(e)
-      setLoading(false);
-    })
-    
-    setTimeout(()=>console.log('Dispaly>>>>',display),5000) 
-  },[])
+  useEffect(() => {
+    // Fetch data from the API
+    fetch('https://dummyjson.com/products')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((jsonData) => {
+        // Update the state with the fetched data
+        setData(jsonData);
+        setIsLoading(false); // Set loading to false once data is fetched
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        setError(error);
+        setIsLoading(false); // Set loading to false in case of an error
+      });
+  }, []);
 
   return (
     <div>
-        {
-          loading?<div>Loading...</div>:<div>
-            <h1>Data fetched from API</h1>
-            <pre>{JSON.stringify(display.data)}</pre>
-          </div>
-        }
+      <h1>Data Fetched from API</h1>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>An error occurred: {error.message}</p>
+      ) : data ? (
+        <pre>{JSON.stringify(data, null, 2)}</pre>
+      ) : (
+        <p>No data found</p>
+      )}
     </div>
-  )
+  );
 }
 
 export default App
